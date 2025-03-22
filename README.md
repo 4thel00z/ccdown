@@ -1,6 +1,6 @@
 # CC-Downloader
 
-This is an experimental polite downloader for Common Crawl data writter in `rust`. This tool is intended for use outside of AWS.
+This is an experimental polite downloader for Common Crawl data written in `rust`. This tool is intended for use outside of AWS.
 
 ## Todo
 
@@ -71,4 +71,4 @@ Options:
 
 ## Number of threads
 
-The number of threads can be set using the `-t` flag. The default value is 10. It is advised to use the default value to avoid being blocked by the server. If you make too many requests in a short period of time, you will satrt receiving `403` errors which are unrecoverable and cannot be retried by the downloader.
+The number of threads can be set using the `-t` flag. The default value is 10. It is advised to use the default value to avoid being blocked by the server. If you make too many requests in a short period of time, you will start receiving `403` errors which are unrecoverable and cannot be retried by the downloader.
