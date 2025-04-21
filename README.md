@@ -10,7 +10,7 @@ This is an experimental polite downloader for Common Crawl data written in `rust
 
 ## Installation
 
-You can install `cc-downloader`` via our pre-built binaries, or by compiling it from source.
+You can install `cc-downloader` via our pre-built binaries, or by compiling it from source.
 
 ### Pre-built binaries
 
