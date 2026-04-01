@@ -19,7 +19,7 @@ fn run_async<F: std::future::Future<Output = Result<(), DownloadError>>>(
 ///     client = Client(threads=10, retries=1000, progress=True)
 ///     client.paths("CC-MAIN-2025-08", "warc").to("./paths")
 ///     client.download("./paths/warc.paths.gz").to("./data")
-#[pyclass]
+#[pyclass(skip_from_py_object)]
 #[derive(Clone)]
 pub struct Client {
     threads: usize,
