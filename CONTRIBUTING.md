@@ -1,8 +1,8 @@
-# How to contribute to cc-downloader?
+# How to contribute to ccdown?
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-`cc-downloader` is an open source project, so all contributions and suggestions are welcome.
+`ccdown` is an open source project, so all contributions and suggestions are welcome.
 
 You can contribute in many different ways: giving ideas, answering questions, reporting bugs, proposing enhancements,
 improving the documentation, fixing bugs,...
@@ -14,7 +14,7 @@ our [code of conduct](CODE_OF_CONDUCT.md).
 
 ## How to work on an open Issue?
 
-You have the list of open Issues at: [https://github.com/commoncrawl/cc-downloader/issues](https://github.com/commoncrawl/cc-downloader/issues)
+You have the list of open Issues at: [https://github.com/4thel00z/ccdown/issues](https://github.com/4thel00z/ccdown/issues)
 
 Some of them may have the label `help wanted`: that means that any contributor is welcomed!
 
@@ -28,14 +28,14 @@ If you would like to work on any of the open Issues:
 
 ## How to create a Pull Request?
 
-1. Fork the [repository](https://github.com/commoncrawl/cc-downloader) by clicking on the 'Fork' button on the repository's page. This creates a copy of the code under your GitHub user account.
+1. Fork the [repository](https://github.com/4thel00z/ccdown) by clicking on the 'Fork' button on the repository's page. This creates a copy of the code under your GitHub user account.
 
 2. Clone your fork to your local disk, and add the base repository as a remote:
 
     ```bash
-    git clone git@github.com:<your Github handle>/cc-downloader.git
+    git clone git@github.com:<your Github handle>/ccdown.git
     cd datasets
-    git remote add upstream git@github.com:commoncrawl/cc-downloader.git
+    git remote add upstream git@github.com:4thel00z/ccdown.git
     ```
 
 3. Switch to the `dev` branch and then create a new branch to hold your development changes:

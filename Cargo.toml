@@ -1,15 +1,15 @@
 [package]
-name = "cc-downloader"
+name = "ccdown"
 version = "0.6.1"
 edition = "2024"
-authors = ["Pedro Ortiz Suarez <pedro@commoncrawl.org>"]
+authors = ["4thel00z <4thel00z@gmail.com>"]
 description = "A polite and user-friendly downloader for Common Crawl data."
 license = "MIT OR Apache-2.0"
-rust-version = "1.85"
+rust-version = "1.94"
 readme = "README.md"
-homepage = "https://commoncrawl.org"
-repository = "https://github.com/commoncrawl/cc-downloader"
-documentation = "https://docs.rs/cc-downloader"
+homepage = "https://tahrioui.com"
+repository = "https://github.com/4thel00z/ccdown"
+documentation = "https://docs.rs/ccdown"
 
 [dependencies]
 clap = { version = "4.5.32", features = ["derive"] }
