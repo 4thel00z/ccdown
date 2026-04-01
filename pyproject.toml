@@ -1,0 +1,24 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "ccdown"
+version = "0.6.1"
+description = "A polite and user-friendly downloader for Common Crawl data."
+readme = "README.md"
+license = { text = "MIT OR Apache-2.0" }
+requires-python = ">=3.9"
+authors = [{ name = "4thel00z", email = "4thel00z@gmail.com" }]
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+[project.urls]
+Homepage = "https://github.com/4thel00z/ccdown"
+Repository = "https://github.com/4thel00z/ccdown"
+
+[tool.maturin]
+features = ["python"]

@@ -1,14 +1,11 @@
 use clap::Parser;
 
-use crate::cli::Commands;
-
-mod cli;
-mod download;
-mod errors;
+use ccdown::cli::Commands;
+use ccdown::download;
 
 #[tokio::main]
 async fn main() {
-    let cli = cli::Cli::parse();
+    let cli = ccdown::cli::Cli::parse();
 
     match &cli.command {
         Some(Commands::DownloadPaths {
@@ -37,6 +34,7 @@ async fn main() {
             retries,
             numbered,
             files_only,
+            strict,
         }) => {
             if *numbered && *files_only {
                 eprintln!("Numbered and Files Only flags are incompatible");
@@ -49,6 +47,7 @@ async fn main() {
                     max_retries: *retries,
                     numbered: *numbered,
                     files_only: *files_only,
+                    strict: *strict,
                     ..Default::default()
                 };
                 match download::download(options).await {

@@ -34,6 +34,8 @@ pub struct DownloadOptions<'a> {
     pub numbered: bool,
     pub files_only: bool,
     pub progress: bool,
+    pub strict: bool,
+    pub base_url: Option<String>,
 }
 
 pub struct TaskOptions {
@@ -57,6 +59,8 @@ impl Default for DownloadOptions<'_> {
             numbered: false,
             files_only: false,
             progress: false,
+            strict: false,
+            base_url: None,
         }
     }
 }
@@ -78,6 +82,11 @@ fn new_client(max_retries: usize) -> Result<ClientWithMiddleware, DownloadError>
 pub async fn download_paths(mut options: DownloadOptions<'_>) -> Result<(), DownloadError> {
     let news_re = Regex::new(r"^(CC\-NEWS)\-([0-9]{4})\-([0-9]{2})$").unwrap();
 
+    let base_url = options
+        .base_url
+        .as_deref()
+        .unwrap_or(BASE_URL);
+
     // Check if the snapshot is a news snapshot and reformat it
     // The format of the main crawl urls is different from the news crawl urls
     // https://data.commoncrawl.org/crawl-data/CC-NEWS/2025/01/warc.paths.gz
@@ -89,7 +98,7 @@ pub async fn download_paths(mut options: DownloadOptions<'_>) -> Result<(), Down
     }
     let paths = format!(
         "{}crawl-data/{}/{}.paths.gz",
-        BASE_URL, options.snapshot, options.data_type
+        base_url, options.snapshot, options.data_type
     );
     println!("Downloading paths from: {}", paths);
     let url = Url::parse(&paths)?;
@@ -98,7 +107,7 @@ pub async fn download_paths(mut options: DownloadOptions<'_>) -> Result<(), Down
 
     let filename = url
         .path_segments() // Splits into segments of the URL
-        .and_then(|segments| segments.last()) // Retrieves the last segment
+        .and_then(|mut segments| segments.next_back()) // Retrieves the last segment
         .unwrap_or("file.download"); // Fallback to generic filename
 
     let resp = client.head(url.as_str()).send().await?;
@@ -158,16 +167,21 @@ async fn download_task(
     // A Header request for the CONTENT_LENGTH header gets us the file size
     let download_size = {
         let resp = client.head(url.as_str()).send().await?;
-        if resp.status().is_success() {
+        let status = resp.status();
+        if status.is_success() {
             resp.headers() // Gives us the HeaderMap
                 .get(header::CONTENT_LENGTH) // Gives us an Option containing the HeaderValue
                 .and_then(|ct_len| ct_len.to_str().ok()) // Unwraps the Option as &str
                 .and_then(|ct_len| ct_len.parse().ok()) // Parses the Option as u64
                 .unwrap_or(0) // Fallback to 0
+        } else if matches!(status.as_u16(), 401 | 403 | 404) {
+            return Err(DownloadError::Unrecoverable(
+                status.as_u16(),
+                url.to_string(),
+            ));
         } else {
-            // We return an Error if something goes wrong here
             return Err(
-                format!("Couldn't download URL: {}. Error: {:?}", url, resp.status()).into(),
+                format!("Couldn't download URL: {}. Error: {:?}", url, status).into(),
             );
         }
     };
@@ -177,7 +191,7 @@ async fn download_task(
         &format!("{}{}", task_options.number, ".txt.gz")
     } else if task_options.files_only {
         url.path_segments()
-            .and_then(|segments| segments.last())
+            .and_then(|mut segments| segments.next_back())
             .unwrap_or("file.download")
     } else {
         url.path().strip_prefix("/").unwrap_or("file.download")
@@ -209,10 +223,10 @@ async fn download_task(
     }
 
     // Create the directory if it doesn't exist
-    if !task_options.numbered {
-        if let Some(parent) = dst.parent() {
-            tokio::fs::create_dir_all(parent).await?;
-        }
+    if !task_options.numbered
+        && let Some(parent) = dst.parent()
+    {
+        tokio::fs::create_dir_all(parent).await?;
     }
 
     // Create the output file with tokio's async fs lib
@@ -254,6 +268,11 @@ async fn download_task(
 pub async fn download(options: DownloadOptions<'_>) -> Result<(), DownloadError> {
     // A vector containing all the URLs to download
 
+    let base_url = options
+        .base_url
+        .as_deref()
+        .unwrap_or(BASE_URL);
+
     let file = {
         let gzip_file = match File::open(options.paths) {
             Ok(file) => file,
@@ -274,7 +293,7 @@ pub async fn download(options: DownloadOptions<'_>) -> Result<(), DownloadError>
         .lines()
         .map(|line| {
             let line = line.unwrap();
-            format!("{}{}", BASE_URL, line)
+            format!("{}{}", base_url, line)
         })
         .enumerate()
         .collect();
@@ -349,7 +368,14 @@ pub async fn download(options: DownloadOptions<'_>) -> Result<(), DownloadError>
     while let Some(result) = set.join_next().await {
         match result {
             Ok(Ok(())) => {}
-            Ok(Err(e)) => eprintln!("Error: {:?}", e),
+            Ok(Err(e)) => {
+                if options.strict && e.is_unrecoverable() {
+                    eprintln!("Strict mode: aborting due to unrecoverable error: {}", e);
+                    set.abort_all();
+                    return Err(e);
+                }
+                eprintln!("Error: {:?}", e);
+            }
             Err(e) => eprintln!("Error: {:?}", e),
         }
     }
