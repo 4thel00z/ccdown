@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.5](https://github.com/4thel00z/ccdown/compare/v0.6.4...v0.6.5) - 2026-04-01
+
+### Other
+
+- add Python bindings and --strict flag to README
+- Merge pull request #4 from 4thel00z/release-plz-2026-04-01T02-58-41Z
+- drop linux aarch64, keep macos aarch64
+
 ## [0.6.4](https://github.com/4thel00z/ccdown/compare/v0.6.3...v0.6.4) - 2026-04-01
 
 ### Fixed
