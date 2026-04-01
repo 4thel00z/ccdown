@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.4](https://github.com/4thel00z/ccdown/compare/v0.6.3...v0.6.4) - 2026-04-01
+
+### Fixed
+
+- add --find-interpreter for linux manylinux builds
+- replace macos-13 with macos-latest, fix QEMU setup for aarch64
+- add QEMU for aarch64 linux, drop --find-interpreter
+
+### Other
+
+- drop windows support
+- drop musllinux support
+- Merge pull request #2 from 4thel00z/release-plz-2026-04-01T02-45-16Z
+
 ## [0.6.3](https://github.com/4thel00z/ccdown/compare/v0.6.2...v0.6.3) - 2026-04-01
 
 ### Added

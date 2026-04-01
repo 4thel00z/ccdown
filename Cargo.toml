@@ -1,6 +1,6 @@
 [package]
 name = "ccdown"
-version = "0.6.3"
+version = "0.6.4"
 edition = "2024"
 authors = ["4thel00z <4thel00z@gmail.com>"]
 description = "A polite and user-friendly downloader for Common Crawl data."
