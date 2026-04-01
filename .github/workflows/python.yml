@@ -37,23 +37,6 @@ jobs:
           name: wheels-linux-${{ matrix.target }}
           path: dist
 
-  windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Build wheels
-        uses: PyO3/maturin-action@v1
-        with:
-          args: --release --out dist
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-windows-x64
-          path: dist
-
   macos:
     runs-on: ${{ matrix.platform.runner }}
     strategy:
@@ -98,7 +81,7 @@ jobs:
     name: Publish to PyPI
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [linux, windows, macos, sdist]
+    needs: [linux, macos, sdist]
     environment: prod
     permissions:
       id-token: write
